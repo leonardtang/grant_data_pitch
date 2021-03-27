@@ -1,5 +1,4 @@
-NSF_codes_dict = 
-    {"SBE": ("Social, Behavioral & Economic Sciences", 
+NSF_codes_dict = {"SBE": ("Social, Behavioral & Economic Sciences",
         {"SES": "Division of Social and Economic Sciences", 
          "BCS": "Division of Behavioral and Cognitive Sciences",
          "NCSE": "National Center for Science and Engineering Statistics", 
@@ -9,7 +8,7 @@ NSF_codes_dict =
          "CHE": "Division of Chemistry", 
          "DMR": "Division of Materials Research", 
          "DMS": "Division of Mathematical Sciences", 
-         "PHY”: “Division of Physics"}), 
+         "PHY": "Division of Physics"}),
      "GEO": ("Geosciences", 
         {"AGS": "Division of Atmospheric and Geospace Sciences", 
          "EAR": "Division of Earth Sciences", 
