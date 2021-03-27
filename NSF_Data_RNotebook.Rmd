@@ -1,0 +1,209 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Necessary packages
+```{r, include = FALSE}
+library(rio)
+library(dplyr)
+library(tidyverse)
+library(descr)
+library(ggplot2)
+```
+
+# Loading in Dataset
+```{r}
+NSF_awards <- import("Awards_IntFunding.csv")
+View(NSF_awards)
+```
+
+```{r}
+# glimpse(NSF_awards)
+# summary(NSF_awards)
+```
+
+# Creating dataframe grouped by directorate, and summary stats for each
+```{r}
+total_funding <- sum(NSF_awards$AwardedAmountToDate, na.rm = TRUE)
+
+Funding_By_D <- NSF_awards %>%
+  filter(!is.na(AwardedAmountToDate)) %>%
+  group_by(NSFDirectorate) %>% 
+  summarise(freq = n(), avg = mean(AwardedAmountToDate) / 1000000, 
+            total = sum(AwardedAmountToDate, na.rm = TRUE),
+            prop_total = total / total_funding)
+
+Funding_By_D
+```
+
+# Plot of means (average funding for each directorate)
+```{r}
+Funding_By_D %>%
+  ggplot(mapping = aes(x = NSFDirectorate, y = avg)) +
+  geom_point(color = "blue") +
+  labs(title = "Average Funding For Each NSF Directorate",
+       subtitle = "Education and Human Resources receives most funding
+on average, valued at $353M",
+       x = "NSF Directorates", y = "Average Government Funding (Millions of $)",
+       caption = "Caption") +
+  theme_clean()
+```
+# Plot of proportions (allocation of total government funding to each directorate)
+```{r}
+Dir_Funding_Props <- data.frame(
+  group = Funding_By_D$NSFDirectorate,
+  value = Funding_By_D$total)
+
+Dir_Funding_Props
+
+ggplot(data = Dir_Funding_Props, mapping = aes(x="", y = value, 
+                                                       fill = group)) +
+  geom_bar(stat="identity", width = 1) +
+  coord_polar("y", start=0) +
+  labs(title = "Allocation of Government Funding to Each Directorate",
+       subtitle = "Mathematical and Physical Sciences receives greatest
+proportion of government funding with 32% of the funding, followed
+by Education and Human Resources") +
+  theme_void()
+```
+```{r}
+get_org_data <- function(directorate) {
+  total_funding <- sum(NSF_awards$AwardedAmountToDate[NSF_awards$NSFDirectorate == directorate], na.rm = TRUE)
+  Funding_by_O <- NSF_awards %>%
+    filter(!is.na(AwardedAmountToDate), NSFDirectorate == directorate) %>%
+    group_by(NSFOrganization) %>%
+    summarise(freq = n(), avg = mean(AwardedAmountToDate / 1000000),
+              total = sum(AwardedAmountToDate, na.rm = TRUE),
+              prop_total = total / total_funding)
+  Funding_by_O
+}
+```
+
+```{r}
+get_org_point_means <- function(Funding_by_O, directorate, subt) {
+  Funding_by_O %>%
+  ggplot(mapping = aes(x = NSFOrganization, y = avg)) +
+  geom_point(color = "blue") +
+  labs(title = "Average Funding For Each NSF Organization",
+       subtitle = subt,
+       x = paste0(directorate, ": NSF Organizations"), y = "Average Government Funding (Millions of $)",
+       caption = "Caption") +
+  theme_clean()
+}
+```
+
+```{r}
+get_org_pie <- function(Funding_by_O, directorate, subt) {
+  Org_Funding_Props <- data.frame(
+  group = Funding_by_O$NSFOrganization,
+  value = Funding_by_O$total)
+
+Org_Funding_Props
+
+ggplot(data = Org_Funding_Props, mapping = aes(x="", y = value, 
+                                                       fill = group)) +
+  geom_bar(stat="identity", width = 1) +
+  coord_polar("y", start=0) +
+  labs(title = paste0(directorate, ": Allocation of Government Funding to Each Organization"),
+       subtitle = subt) +
+  theme_void()
+}
+```
+
+# Generates dataframes for each directorate
+```{r}
+for (i in Funding_By_D$NSFDirectorate) {
+  print(get_org_data(i))
+}
+```
+# Generates plot of means for each directorate
+```{r}
+subt_vec_point_means <- c("Empty sub", "BIO sub", "CSE sub", "EHR sub", "ENG sub", "GEO sub",
+              "MPS sub", "O/D sub", "SBE sub")
+subt_index <- 1
+for (i in Funding_By_D$NSFDirectorate) {
+  print(get_org_point_means(get_org_data(i), 
+                    i, subt_vec_point_means[subt_index]))
+  subt_index <- subt_index + 1
+}
+subt_index <- 1
+```
+# Generates pie charts for each directorate
+```{r}
+subt_vec_pie <- c("Empty sub", "BIO sub", "CSE sub", "EHR sub", "ENG sub", "GEO sub",
+              "MPS sub", "O/D sub", "SBE sub")
+subt_index <- 1
+for (i in Funding_By_D$NSFDirectorate) {
+  print(get_org_pie(get_org_data(i), 
+                    i, subt_vec_pie[subt_index]))
+  subt_index <- subt_index + 1
+}
+subt_index <- 1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+bio <- NSF_awards %>%
+  filter(NSFDirectorate == "BIO")
+
+df <- data.frame(bio)
+
+# View(df)
+
+# summary(df)
+
+# ggplot(data = df, mapping = aes(x = AwardedAmountToDate)) +
+#   geom_histogram(binwidth = 100000) +
+#   ylim(0, 75)
+# 
+# ggplot(data = df, mapping = aes(y = AwardedAmountToDate)) +
+#   geom_boxplot()
+
+```
+
+
+```{r}
+# FUNCTION EXAMPLE FOR CALCULATING MEANS
+# get_directorate_mean <- function(directorate) {
+#   avg <- mean(NSF_awards$AwardedAmountToDate[NSF_awards$NSFDirectorate == directorate], na.rm = TRUE)
+#   return(avg)
+# }
+# 
+# directorates <- unique(NSF_awards$NSFDirectorate)
+# directorates
+# get_directorate_mean("BIO")
+
+# NSF_awards$AwardedAmountToDate[NSF_awards$NSFDirectorate == "BIO"]
+```
+
+
+```{r}
+# In case variable conversion needs to happen
+# numeric_funding <- gsub(",", "", NSF_awards$AwardedAmountToDate)
+# numeric_funding
+# sapply(NSF_awards, class)
+# as.numeric(numeric_funding) 
+```
