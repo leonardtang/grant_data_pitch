@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+NIH_awards <- import("NIH_data.csv")
+str(NIH_awards)
+```
+
+```{r}
+NIH_awards %>%
+  group_by(Administering_IC) %>%
+  summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+  arrange(desc(freq))
+```
+```{r}
+get_summary_df <- function(year) {
+  if (is.numeric(year)) {
+    NIH_awards %>%
+    filter(Fiscal_Year == year) %>%
+    group_by(Administering_IC) %>%
+    summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+    arrange(desc(freq))
+  } 
+  else {
+    NIH_awards %>%
+    group_by(Administering_IC) %>%
+    summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+    arrange(desc(freq))
+  }
+}
+```
+
+```{r}
+get_summary_df(2019)
+```
+
+

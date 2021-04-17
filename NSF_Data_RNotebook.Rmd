@@ -301,3 +301,6 @@ df <- data.frame(bio)
 # sapply(NSF_awards, class)
 # as.numeric(numeric_funding) 
 ```
+
+
+
