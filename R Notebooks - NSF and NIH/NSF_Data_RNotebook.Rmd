@@ -198,6 +198,9 @@ NSF_H_med_awards_2020 <- NSF_awards %>%
 NSF_H_med_awards_2019
 NSF_H_med_awards_2020
 ```
+#------------------------------------------------------------------------------#
+#---------------------HYPOTHESIS TESTS CONDUCTED BELOW-------------------------#
+#------------------------------------------------------------------------------#
 
 ```{r}
 one_sample_median_test <- function(directorate, year, pop_mean) {
