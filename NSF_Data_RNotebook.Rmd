@@ -10,6 +10,7 @@ library(dplyr)
 library(tidyverse)
 library(descr)
 library(ggplot2)
+library(ggthemes)
 ```
 
 # Loading in Dataset
@@ -21,7 +22,22 @@ View(NSF_awards)
 ```{r}
 # glimpse(NSF_awards)
 # summary(NSF_awards)
+# summary(NSF_awards$Year)
 ```
+
+```{r}
+total_funding <- sum(NSF_awards$AwardedAmountToDate, na.rm = TRUE)
+
+Funding_By_D_Y <- NSF_awards %>%
+  filter(!is.na(AwardedAmountToDate)) %>%
+  group_by(Year) %>% 
+  summarise(freq = n(), avg = mean(AwardedAmountToDate) / 1000000, 
+            total = sum(AwardedAmountToDate, na.rm = TRUE))
+
+Funding_By_D_Y
+#             prop_total = total / total_funding
+```
+
 
 # Creating dataframe grouped by directorate, and summary stats for each
 ```{r}
@@ -42,11 +58,12 @@ Funding_By_D
 Funding_By_D %>%
   ggplot(mapping = aes(x = NSFDirectorate, y = avg)) +
   geom_point(color = "blue") +
-  labs(title = "Average Funding For Each NSF Directorate",
-       subtitle = "Education and Human Resources receives most funding
-on average, valued at $353M",
+  labs(title = "Overall Average Funding For Each NSF Directorate",
+       subtitle = "Education and Human Resources disproportionately receives most funding
+on average, valued at $2.17M",
        x = "NSF Directorates", y = "Average Government Funding (Millions of $)",
-       caption = "Caption") +
+       caption = "National Science Foundation") +
+#facet_wrap(~term == c(1960, 1990)) - select particular terms to analyze
   theme_clean()
 ```
 # Plot of proportions (allocation of total government funding to each directorate)
@@ -61,7 +78,7 @@ ggplot(data = Dir_Funding_Props, mapping = aes(x="", y = value,
                                                        fill = group)) +
   geom_bar(stat="identity", width = 1) +
   coord_polar("y", start=0) +
-  labs(title = "Allocation of Government Funding to Each Directorate",
+  labs(title = "Overall Allocation of Government Funding to Each Directorate",
        subtitle = "Mathematical and Physical Sciences receives greatest
 proportion of government funding with 32% of the funding, followed
 by Education and Human Resources") +
@@ -83,12 +100,12 @@ get_org_data <- function(directorate) {
 ```{r}
 get_org_point_means <- function(Funding_by_O, directorate, subt) {
   Funding_by_O %>%
-  ggplot(mapping = aes(x = NSFOrganization, y = avg)) +
-  geom_point(color = "blue") +
-  labs(title = "Average Funding For Each NSF Organization",
+  ggplot(mapping = aes(x = NSFOrganization, y = avg, fill = NSFOrganization)) +
+  stat_summary(fun = "mean", geom = "bar") +
+  labs(title = paste0(directorate, ": Average Funding For Each NSF Organization"),
        subtitle = subt,
-       x = paste0(directorate, ": NSF Organizations"), y = "Average Government Funding (Millions of $)",
-       caption = "Caption") +
+       x = "NSF Organizations", y = "Average Government Funding (Millions of $)",
+       caption = "National Science Foundation") +
   theme_clean()
 }
 ```
@@ -96,16 +113,16 @@ get_org_point_means <- function(Funding_by_O, directorate, subt) {
 ```{r}
 get_org_pie <- function(Funding_by_O, directorate, subt) {
   Org_Funding_Props <- data.frame(
-  group = Funding_by_O$NSFOrganization,
+  Organization = Funding_by_O$NSFOrganization,
   value = Funding_by_O$total)
 
 Org_Funding_Props
 
 ggplot(data = Org_Funding_Props, mapping = aes(x="", y = value, 
-                                                       fill = group)) +
+                                                       fill = Organization)) +
   geom_bar(stat="identity", width = 1) +
   coord_polar("y", start=0) +
-  labs(title = paste0(directorate, ": Allocation of Government Funding to Each Organization"),
+  labs(title = paste0(directorate, ": Overall Allocation of Government Funding to Each Organization"),
        subtitle = subt) +
   theme_void()
 }
@@ -119,20 +136,37 @@ for (i in Funding_By_D$NSFDirectorate) {
 ```
 # Generates plot of means for each directorate
 ```{r}
-subt_vec_point_means <- c("Empty sub", "BIO sub", "CSE sub", "EHR sub", "ENG sub", "GEO sub",
-              "MPS sub", "O/D sub", "SBE sub")
+subt_vec_point_means <- c("Empty sub", 
+                          "Division of Molecular and Cellular Biosciences with most average funding of $0.47M", 
+                          "Office of Advanced Cyberinfrastructure with most average funding of $0.38M", 
+                          "Division of Research on Learning in Formal and Informal Settings 
+with most average funding of $0.71M", 
+                          "Division of Civil, Mechanical & Manufacturing Innovation
+with most average funding of $3.75M", 
+                          "Division of Ocean Sciences with most average funding of $0.41M",
+                          "Division of Materials Research with most average funding of $0.83M", 
+                          "Office of Integrative Activities with disproportionately
+most average funding of $0.87M", 
+                          "Division of Behavioral and Cognitive Sciences with most average funding of $0.32M")
 subt_index <- 1
 for (i in Funding_By_D$NSFDirectorate) {
   print(get_org_point_means(get_org_data(i), 
-                    i, subt_vec_point_means[subt_index]))
+                    i, subt_vec_point_means[subt_index]) + theme(legend.position = "none"))
   subt_index <- subt_index + 1
 }
 subt_index <- 1
 ```
 # Generates pie charts for each directorate
 ```{r}
-subt_vec_pie <- c("Empty sub", "BIO sub", "CSE sub", "EHR sub", "ENG sub", "GEO sub",
-              "MPS sub", "O/D sub", "SBE sub")
+subt_vec_pie <- c("Empty sub", 
+                  "43% of funding goes towards the Division of Environmental Biology", 
+                  "37% of funding goes towards Information and Intelligent Systems", 
+                  "64% of funding goes towards the Division of Graduate Education", 
+                  "41% of funding goes towards the Division of Engineering Education & Centers", 
+                  "41% of funding goes towards the Division of Atmospheric and Geospace Sciences",
+                  "35% of funding goes towards the Division of Materials Research", 
+                  "73% of funding goes towards the Office of Integrative Activities", 
+                  "53% of funding goes towards the Division of Social and Economic Sciences")
 subt_index <- 1
 for (i in Funding_By_D$NSFDirectorate) {
   print(get_org_pie(get_org_data(i), 
@@ -142,11 +176,71 @@ for (i in Funding_By_D$NSFDirectorate) {
 subt_index <- 1
 ```
 
+# Hypothesis Testing
+```{r}
+NSF_median_awards <- import("NSF_Median_Awards.csv")
+View(NSF_median_awards)
+str(NSF_median_awards)
+```
 
 
+```{r}
+NSF_H_med_awards_2019 <- NSF_awards %>%
+  filter(Year == 2019) %>%
+  group_by(NSFDirectorate) %>%
+  summarise(freq = n(), median_award = median(AwardedAmountToDate, na.rm = TRUE))
+
+NSF_H_med_awards_2020 <- NSF_awards %>%
+  filter(Year == 2020) %>%
+  group_by(NSFDirectorate) %>%
+  summarise(freq = n(), median_award = median(AwardedAmountToDate, na.rm = TRUE))
+
+NSF_H_med_awards_2019
+NSF_H_med_awards_2020
+```
+
+```{r}
+one_sample_median_test <- function(directorate, year, pop_mean) {
+  NSF_filtered <- NSF_awards %>%
+    filter(Year == year, NSFDirectorate == directorate)
+  
+  median(NSF_filtered$AwardedAmountToDate, na.rm = TRUE)
+  wilcox.test(NSF_filtered$AwardedAmountToDate, mu = pop_mean, alternative = "greater")
+}
+```
 
 
+```{r}
+# harvard_medians_2019 <- c(174102, 159679, 199613, 123580, 146771, 114467, 337650, 80016)
+# ind <- 1
+# for (dir in Funding_By_D$NSFDirectorate) {
+#   print(one_sample_median_test(dir, 2019, harvard_medians_2019[ind]))
+#   ind <- ind + 1
+# }
+# ind <- 1
+                                            # Significant at alpha = 0.05?
+one_sample_median_test("BIO", 2019, 174102) # 2 sided: no, 1 sided (greater): no 
+one_sample_median_test("CSE", 2019, 159679) # 2 sided: yes, 1 sided (greater): yes
+one_sample_median_test("EHR", 2019, 199613) # 2 sided: no, 1 sided (greater): no
+one_sample_median_test("ENG", 2019, 123580) # 2 sided: no, 1 sided (greater): no
+one_sample_median_test("GEO", 2019, 146771) # 2 sided: yes, 1 sided (greater): yes
+one_sample_median_test("MPS", 2019, 114467) # 2 sided: yes, 1 sided (greater): yes
+one_sample_median_test("O/D", 2019, 337650) # 2 sided: ??, 1 sided (greater): ??
+one_sample_median_test("SBE", 2019, 80016) # 2 sided: no, 1 sided (greater): yes
+```
 
+```{r}
+                                            # Significant at alpha = 0.05?
+one_sample_median_test("BIO", 2020, 170518) # 2 sided: no, 1 sided (greater): no  
+one_sample_median_test("CSE", 2020, 150206) # 2 sided: no, 1 sided (greater): no
+one_sample_median_test("EHR", 2020, 166819) # 2 sided: no, 1 sided (greater): no
+one_sample_median_test("ENG", 2020, 149007) # 2 sided: yes, 1 sided (greater): yes
+one_sample_median_test("GEO", 2020, 152479) # 2 sided: no, 1 sided (greater): no
+one_sample_median_test("MPS", 2020, 121541) # 2 sided: yes, 1 sided (greater): yes
+# one_sample_median_test("O/D", 2020, 130499) # 2 sided: ??, 1 sided (greater): ??
+one_sample_median_test("SBE", 2020, 99192) # 2 sided: no, 1 sided (greater): no
+
+```
 
 
 
@@ -207,3 +301,6 @@ df <- data.frame(bio)
 # sapply(NSF_awards, class)
 # as.numeric(numeric_funding) 
 ```
+
+
+

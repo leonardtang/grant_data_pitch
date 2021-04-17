@@ -1,0 +1,119 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+NIH_awards <- import("NIH_data.csv")
+str(NIH_awards)
+```
+
+```{r}
+NIH_awards %>%
+  group_by(Administering_IC) %>%
+  summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+  arrange(desc(avg_cost))
+```
+```{r}
+get_summary_df <- function(year) {
+  if (is.numeric(year)) {
+    Funding_By_IC <- NIH_awards %>%
+      filter(Fiscal_Year == year) %>%
+      group_by(Administering_IC) %>%
+      summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+      arrange(desc(avg_cost))
+  } 
+  else {
+    Funding_By_IC <- NIH_awards %>%
+      group_by(Administering_IC) %>%
+      summarise(freq = n(), avg_cost = mean(Total_Cost, na.rm = TRUE)) %>%
+      arrange(desc(avg_cost))
+  }
+  
+  Funding_By_IC
+}
+```
+
+```{r}
+get_summary_df(2020)
+```
+# Loading in Population Mean Data, for 2019 and 2020 Specifically
+```{r}
+NIH_avgs_2019 <- import("NIH_Avg_Funding_19.csv")
+# str(NIH_avgs_2019)
+
+NIH_avgs_2020 <- import("NIH_Avg_Funding_20.csv")
+# str(NIH_avgs_2020)
+```
+
+# Abstract Function to Run One-Sample T Test for Means
+```{r}
+one_sample_t_test <- function(IC_name, year, pop_data) {
+  NIH_filtered <- NIH_awards %>%
+    filter(Fiscal_Year == year, Administering_IC == IC_name)
+  
+  pop_mean <- pop_data %>%
+    filter(IC == IC_name)
+  
+  t.test(NIH_filtered$Total_Cost, mu = (pop_mean$FUNDING_INT) / (pop_mean$AWARDS), alternative = "greater")
+}
+```
+
+#------------------------------------------------------------------------------#
+#---------------------HYPOTHESIS TESTS CONDUCTED BELOW-------------------------#
+#------------------------------------------------------------------------------#
+
+# Analyzing 2019: Top 5 IC's that Have Most Awarded Projects Over Time
+```{r}
+one_sample_t_test("NCI", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NIAID", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NIGMS", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NHLBI", 2019, NIH_avgs_2019) #not sig
+one_sample_t_test("NINDS", 2019, NIH_avgs_2019) #not sig
+```
+
+# Analyzing 2019: Top 4 IC's that Have the Largest Average Award Funding Over Time
+```{r}
+one_sample_t_test("NCATS", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NICHD", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NIAID", 2019, NIH_avgs_2019) #sig
+one_sample_t_test("NHGRI", 2019, NIH_avgs_2019) #not sig
+```
+
+
+
+# Analyzing 2020: Top 5 IC's that Have Most Awarded Projects Over Time
+```{r}
+one_sample_t_test("NCI", 2020, NIH_avgs_2020) #not sig
+one_sample_t_test("NIAID", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NIGMS", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NHLBI", 2020, NIH_avgs_2020) #not sig
+one_sample_t_test("NINDS", 2020, NIH_avgs_2020) #not sig
+```
+
+# Analyzing 2020: Top 4 IC's that Have the Largest Average Award Funding Over Time
+```{r}
+one_sample_t_test("NCATS", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NICHD", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NIAID", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NHGRI", 2020, NIH_avgs_2020) #not sig
+```
+
+
+
+# Analyzing 2020: Top 5 IC's that Have Most Awarded Projects in 2020
+```{r}
+one_sample_t_test("NCI", 2020, NIH_avgs_2020) #not sig
+one_sample_t_test("NIAID", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NIGMS", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NINDS", 2020, NIH_avgs_2020) #not sig
+one_sample_t_test("NIA", 2020, NIH_avgs_2020) #not sig
+```
+
+# Analyzing 2020: Top 4 IC's that Have the Largest Average Award Funding in 2020
+```{r}
+one_sample_t_test("NCATS", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NICHD", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NIAID", 2020, NIH_avgs_2020) #sig
+one_sample_t_test("NCCIH", 2020, NIH_avgs_2020) #not sig
+```
