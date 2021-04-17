@@ -1,0 +1,264 @@
+
+    <table border=1>
+        <tr>
+            
+                <th>IC</th>
+				
+                <th>AWARDS</th>
+				
+                <th>FUNDING</th>
+				
+        </tr>
+        
+            <tr>
+                
+					<td>FIC</td>
+				
+					<td>82</td>
+				
+                    <td>$16,745,165</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NCATS</td>
+				
+					<td>155</td>
+				
+                    <td>$91,101,126</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NCCIH</td>
+				
+					<td>259</td>
+				
+                    <td>$135,629,804</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NCI</td>
+				
+					<td>5481</td>
+				
+                    <td>$2,752,867,597</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NEI</td>
+				
+					<td>1370</td>
+				
+                    <td>$541,838,102</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NHGRI</td>
+				
+					<td>428</td>
+				
+                    <td>$356,799,267</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NHLBI</td>
+				
+					<td>4292</td>
+				
+                    <td>$2,619,445,330</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIA</td>
+				
+					<td>3286</td>
+				
+                    <td>$2,447,212,149</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIAAA</td>
+				
+					<td>811</td>
+				
+                    <td>$317,082,367</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIAID</td>
+				
+					<td>5862</td>
+				
+                    <td>$4,659,748,675</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIAMS</td>
+				
+					<td>1138</td>
+				
+                    <td>$470,885,070</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIBIB</td>
+				
+					<td>758</td>
+				
+                    <td>$329,274,729</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NICHD</td>
+				
+					<td>1977</td>
+				
+                    <td>$903,661,261</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIDA</td>
+				
+					<td>1617</td>
+				
+                    <td>$980,350,440</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIDCD</td>
+				
+					<td>900</td>
+				
+                    <td>$366,162,114</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIDCR</td>
+				
+					<td>743</td>
+				
+                    <td>$321,818,865</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIDDK</td>
+				
+					<td>3089</td>
+				
+                    <td>$1,545,384,195</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIEHS</td>
+				
+					<td>760</td>
+				
+                    <td>$311,404,055</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIGMS</td>
+				
+					<td>5318</td>
+				
+                    <td>$1,973,754,584</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIMH</td>
+				
+					<td>2534</td>
+				
+                    <td>$1,453,660,507</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NIMHD</td>
+				
+					<td>314</td>
+				
+                    <td>$158,377,839</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NINDS</td>
+				
+					<td>3512</td>
+				
+                    <td>$1,938,095,176</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NINR</td>
+				
+					<td>281</td>
+				
+                    <td>$129,135,937</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>NLM</td>
+				
+					<td>126</td>
+				
+                    <td>$43,083,573</td>
+				
+            </tr>
+        
+            <tr>
+                
+					<td>OD</td>
+				
+					<td>209</td>
+				
+                    <td>$193,369,879</td>
+				
+            </tr>
+        
+    </table>
+	
