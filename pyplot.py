@@ -1,27 +1,40 @@
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 
-YEAR = "2020"
-XGROUP = 'NSFDirectorate'
+XGROUP = 'StartDate'
+directorates = ['SBE', 'MPS', 'BIO', 'GEO','EHR', 'O/D', 'CSE', 'ENG']
+
+color = list(np.random.choice(range(256), size=3))
 
 dataset = pd.read_csv("Awards.csv", error_bad_lines=False, encoding="ISO-8859–1")
 df = pd.DataFrame(dataset)
 
-df["AwardedAmountToDate"] = pd.to_numeric(df["AwardedAmountToDate"])
-df['StartDate'] = df[df.columns[4]].str[-4:]
-df = df[df['StartDate'] == YEAR]
-df = df.groupby([XGROUP]).mean()
-X = pd.Series(df.index.values)
-
-Y1 = pd.Series(df[df.columns[0]])
-
 fig = go.Figure()
 
-fig.add_trace(go.Bar(
-    x=X, y=Y1, 
-    name="Avg. Grant Awarded Amount",
-))
+df['StartDate'] = df[df.columns[4]].str[-4:]
+directorates = list(set(df['NSFDirectorate']))
 
-fig.update_layout(title=f"{YEAR} Comparison of Average Grant Award Amount by {XGROUP}", barmode='stack')
+for directorate in directorates:
+    df_new = df[df['NSFDirectorate'] == directorate]
+    df_new = df_new.groupby([XGROUP]).mean()
+    X1 = pd.Series(df_new.index.values).tolist()
+    X1 = [int(i) for i in X1]
+    Y1 = pd.Series(df_new[df_new.columns[0]]).tolist()
+    Y1 = [int(i) for i in Y1]
+
+    fig.add_trace(go.Bar(
+        x=X1, 
+        y=Y1, 
+        name=directorate,
+        #marker_color=color,
+    ))
+
+fig.update_layout(
+    title=f"Comparison of Average Grant Award Amount by Directorates Over Time", 
+    xaxis={'title':{'text':'Year'}},
+    yaxis={'title':{'text':'Avg. Grant Awarded Amount Per Year'}},
+    showlegend=True)
 
 fig.show()
+
